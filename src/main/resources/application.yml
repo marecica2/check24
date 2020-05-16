@@ -1,0 +1,20 @@
+server:
+  port: ${APP_PORT}
+spring:
+  application:
+    name: kredite24
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driver-class-name: org.h2.Driver
+  jpa:
+    database: h2
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.lob.non_contextual_creation: true
+        temp.use_jdbc_metadata_defaults: false
+        jdbc.batch_size: 1000
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect

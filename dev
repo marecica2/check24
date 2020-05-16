@@ -1,0 +1,83 @@
+if ! [[ -x "$(command -v docker-compose)" ]]; then
+  echo "Please install Docker and then fire the script again"
+  quit
+fi
+
+DOCKER="docker"
+COMPOSE="docker-compose"
+ENV_VARS=.env.dev
+
+export $(cat $ENV_VARS | xargs)
+
+function quit() {
+  echo >&2 "$@"
+  exit 1
+}
+
+function info() {
+  echo -e "\x1B[33m$1\x1B[0m"
+}
+
+function success() {
+  echo -e "\x1B[32m$1\x1B[0m"
+}
+
+function appStop() {
+  info "== Shutting down currently running Stack ... =="
+  env $(cat $ENV_VARS) $COMPOSE -f docker-compose.dev.yml -f docker-compose.yml stop
+}
+
+function appStart() {
+  info "== Starting App ... =="
+  info "== Starting infrastructure services =="
+  #mvn -ntp clean install -DskipTests
+  env $(cat $ENV_VARS) $COMPOSE -f docker-compose.yml  -f docker-compose.dev.yml up -d --remove-orphans --build
+}
+
+function stackStart() {
+  appStop
+  info "== Starting Stack ... =="
+  info "== Starting infrastructure services =="
+  env $(cat $ENV_VARS) $COMPOSE -f docker-compose.yml up -d --remove-orphans --build
+
+  info "== Checking running services =="
+  ${COMPOSE} ps
+
+  success "== Done =="
+}
+
+function build() {
+  mvn -ntp clean install -DskipTests
+  success "== Done =="
+}
+
+function test() {
+  mvn -ntp clean install
+  success "== Done =="
+}
+
+if [[ $# -gt 0 ]]; then
+
+  if [[ "$1" == "start" ]]; then
+    stackStart
+    appStart $@
+
+  elif [[ "$1" == "stack-start" ]]; then
+    stackStart
+
+  elif [[ "$1" == "build" ]]; then
+    build
+
+  elif [[ "$1" == "test" ]]; then
+    test
+
+  elif [[ "$1" == "stack-stop" ]]; then
+    appStop
+
+  else
+    ${COMPOSE} "$@"
+  fi
+
+else
+  ${COMPOSE} ps
+fi
