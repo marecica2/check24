@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories
 public class Kredite24Application {
 
     public static void main(String[] args) {

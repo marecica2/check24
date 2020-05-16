@@ -3,10 +3,11 @@ package balla.marek.kredite24.bookstore;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,9 @@ public class BooksController {
     }
 
     @GetMapping
-    List<BookDto> getBooks() {
+    List<BookDto> getBooks(HttpSession session) {
+        System.out.println(session.getAttribute("user"));
+
         return this.bookRepository
                 .findAll()
                 .stream()
@@ -33,7 +36,7 @@ public class BooksController {
     }
 
     @GetMapping("/{id}/details")
-    BookDto getBookDetail(@PathParam("id") String id) {
+    BookDto getBookDetail(@PathVariable("id") String id) {
         Book b = this.bookRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         return convertToDto(b);
     }
