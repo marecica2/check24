@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Kredite24Application.class})
-@WebMvcTest(controllers = BooksController.class)
-public class BookStoreControllerTest {
+@WebMvcTest(controllers = BooksRestController.class)
+public class BooksRestControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -34,13 +35,23 @@ public class BookStoreControllerTest {
     BookRepository repository;
 
     @Test
+    public void shouldReturnUnauthorized() throws Exception {
+        mvc.perform(MockMvcRequestBuilders
+                            .get("/api/books"))
+           .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
     public void shouldReturnBookList() throws Exception {
+
         Book b1 = new Book();
         b1.setId("b1");
         List<Book> books = List.of(b1);
         when(repository.findAll()).thenReturn(books);
         mvc.perform(MockMvcRequestBuilders
-                            .get("/task/books"))
+                            .get("/api/books")
+        .session(initHttpSession()))
            .andExpect(status().isOk())
            .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
            .andExpect(MockMvcResultMatchers.jsonPath("$[0]['id']").value("b1"));
@@ -52,7 +63,8 @@ public class BookStoreControllerTest {
         b1.setId("b1");
         when(repository.findById(Mockito.any())).thenReturn(Optional.of(b1));
         mvc.perform(MockMvcRequestBuilders
-                            .get("/task/books/b1/details"))
+                            .get("/api/books/b1/details")
+                            .session(initHttpSession()))
            .andExpect(status().isOk())
            .andExpect(MockMvcResultMatchers.jsonPath("$['id']").value("b1"));
     }
@@ -63,7 +75,15 @@ public class BookStoreControllerTest {
         b1.setId("b1");
         when(repository.findById(Mockito.any())).thenThrow(new ResourceNotFoundException());
         mvc.perform(MockMvcRequestBuilders
-                            .get("/task/books/b1/details"))
+                            .get("/api/books/b1/details")
+                            .session(initHttpSession()))
            .andExpect(status().isNotFound());
+    }
+
+    private MockHttpSession initHttpSession() {
+        MockHttpSession session = new MockHttpSession();
+        String user = "user@example.com";
+        session.setAttribute("user", user);
+        return session;
     }
 }
