@@ -1,6 +1,8 @@
 server:
-  port: ${APP_PORT}
+  port: 8080
 spring:
+  thymeleaf:
+    cache: false
   application:
     name: kredite24
   datasource:
