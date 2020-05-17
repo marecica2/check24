@@ -3,11 +3,13 @@ package balla.marek.kredite24.bookstore.web;
 import balla.marek.kredite24.WebConfiguration;
 import balla.marek.kredite24.bookstore.book.Book;
 import balla.marek.kredite24.bookstore.book.BookRepository;
+import balla.marek.kredite24.bookstore.recommender.BookRecommenderService;
 import balla.marek.kredite24.bookstore.web.BooksRestController;
 import balla.marek.kredite24.security.LoggedUserFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +46,9 @@ public class BooksRestControllerTest {
     @MockBean
     BookRepository repository;
 
+    @MockBean
+    BookRecommenderService recommenderService;
+
     @BeforeEach
     public void before() {
         mvc = MockMvcBuilders
@@ -60,7 +66,6 @@ public class BooksRestControllerTest {
 
     @Test
     public void shouldReturnBookList() throws Exception {
-
         Book b1 = new Book();
         b1.setId("b1");
         List<Book> books = List.of(b1);
@@ -77,6 +82,7 @@ public class BooksRestControllerTest {
     public void shouldReturnSingleBook() throws Exception {
         Book b1 = new Book();
         b1.setId("b1");
+        when(recommenderService.getRecommendations(Mockito.any())).thenReturn(Collections.emptyList());
         when(repository.findById(Mockito.any())).thenReturn(Optional.of(b1));
         mvc.perform(MockMvcRequestBuilders
                             .get("/api/books/b1/details")

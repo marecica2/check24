@@ -44,7 +44,6 @@ public class BookRecommenderServiceTest {
         List.of(
                 new BookView(new BookView.BookViewId(books.get(0), users.get(0))),
                 new BookView(new BookView.BookViewId(books.get(1), users.get(0))),
-                new BookView(new BookView.BookViewId(books.get(2), users.get(0))),
                 new BookView(new BookView.BookViewId(books.get(0), users.get(1))),
                 new BookView(new BookView.BookViewId(books.get(1), users.get(1))),
                 new BookView(new BookView.BookViewId(books.get(2), users.get(1))),
@@ -53,6 +52,8 @@ public class BookRecommenderServiceTest {
         em.flush();
 
         List<Book> bookRecommendations = service.getRecommendations(books.get(0));
-        Assertions.assertEquals(0, bookRecommendations.size());
+        Assertions.assertEquals(2, bookRecommendations.size());
+        Assertions.assertEquals("b2", bookRecommendations.get(0).getId());
+        Assertions.assertEquals("b3", bookRecommendations.get(1).getId());
     }
 }

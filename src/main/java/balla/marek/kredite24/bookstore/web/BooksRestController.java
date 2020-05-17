@@ -3,6 +3,8 @@ package balla.marek.kredite24.bookstore.web;
 import balla.marek.kredite24.bookstore.book.Book;
 import balla.marek.kredite24.bookstore.book.BookDto;
 import balla.marek.kredite24.bookstore.book.BookRepository;
+import balla.marek.kredite24.bookstore.recommender.BookRecommenderService;
+import balla.marek.kredite24.bookstore.recommender.BookWithRecommendationsDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +21,13 @@ public class BooksRestController {
 
     private final BookRepository bookRepository;
 
+    private final BookRecommenderService recommenderService;
+
     private final ModelMapper mapper;
 
-    public BooksRestController(BookRepository bookRepository, ModelMapper mapper) {
+    public BooksRestController(BookRepository bookRepository, BookRecommenderService recommenderService, ModelMapper mapper) {
         this.bookRepository = bookRepository;
+        this.recommenderService = recommenderService;
         this.mapper = mapper;
     }
 
@@ -31,17 +36,16 @@ public class BooksRestController {
         return this.bookRepository
                 .findAll()
                 .stream()
-                .map(this::convertToDto)
+                .map(book -> this.mapper.map(book, BookDto.class))
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}/details")
     BookDto getBookDetail(@PathVariable("id") String id) {
-        Book b = this.bookRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        return convertToDto(b);
-    }
-
-    private BookDto convertToDto(Book book) {
-        return this.mapper.map(book, BookDto.class);
+        Book book = this.bookRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<Book> recommendations = this.recommenderService.getRecommendations(book);
+        BookWithRecommendationsDto dto = this.mapper.map(book, BookWithRecommendationsDto.class);
+        dto.setRecommendations(recommendations);
+        return dto;
     }
 }
