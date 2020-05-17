@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookView implements Serializable {
@@ -22,6 +23,7 @@ public class BookView implements Serializable {
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     public static class BookViewId implements Serializable {
         @Getter
         @Setter

@@ -44,6 +44,7 @@ public class BookRecommenderServiceTest {
         List.of(
                 new BookView(new BookView.BookViewId(books.get(0), users.get(0))),
                 new BookView(new BookView.BookViewId(books.get(1), users.get(0))),
+                new BookView(new BookView.BookViewId(books.get(2), users.get(0))),
                 new BookView(new BookView.BookViewId(books.get(0), users.get(1))),
                 new BookView(new BookView.BookViewId(books.get(1), users.get(1))),
                 new BookView(new BookView.BookViewId(books.get(2), users.get(1))),
