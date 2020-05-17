@@ -1,4 +1,4 @@
-package balla.marek.kredite24.login;
+package balla.marek.kredite24.security;
 
 import lombok.*;
 

@@ -1,15 +1,17 @@
-package balla.marek.kredite24.bookstore;
+package balla.marek.kredite24.bookstore.book;
 
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode
 @RequiredArgsConstructor
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @Getter
@@ -39,6 +41,4 @@ public class Book {
     @NonNull
     @Column(length = 1000)
     private String image;
-
-
 }

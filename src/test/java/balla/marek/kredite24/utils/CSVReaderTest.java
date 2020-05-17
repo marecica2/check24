@@ -1,6 +1,6 @@
 package balla.marek.kredite24.utils;
 
-import balla.marek.kredite24.bookstore.Book;
+import balla.marek.kredite24.bookstore.book.Book;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 public class CSVReaderTest {
 

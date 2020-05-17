@@ -1,4 +1,4 @@
-package balla.marek.kredite24.bookstore;
+package balla.marek.kredite24.bookstore.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,6 @@ public class BooksController {
 
     @GetMapping("/{id}/details")
     public String getBook(@PathVariable("id") String bookId) {
-        System.out.println(bookId);
         return "book";
     }
 }

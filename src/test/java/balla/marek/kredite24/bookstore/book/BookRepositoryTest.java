@@ -1,18 +1,18 @@
-package balla.marek.kredite24.bookstore;
+package balla.marek.kredite24.bookstore.book;
 
-import balla.marek.kredite24.Kredite24Application;
+import balla.marek.kredite24.bookstore.book.Book;
+import balla.marek.kredite24.bookstore.book.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 
-@ActiveProfiles("test")
-@SpringBootTest
-@ContextConfiguration(classes = {Kredite24Application.class})
+@ExtendWith(SpringExtension.class)
+@DataJpaTest(properties = "kredite24.initialization.enable=false")
 public class BookRepositoryTest {
 
     @Autowired

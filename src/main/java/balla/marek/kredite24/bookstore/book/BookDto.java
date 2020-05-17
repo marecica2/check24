@@ -1,4 +1,4 @@
-package balla.marek.kredite24.bookstore;
+package balla.marek.kredite24.bookstore.book;
 
 import lombok.*;
 

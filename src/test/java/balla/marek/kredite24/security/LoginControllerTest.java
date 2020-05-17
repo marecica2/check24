@@ -1,6 +1,6 @@
-package balla.marek.kredite24.login;
+package balla.marek.kredite24.security;
 
-import balla.marek.kredite24.Kredite24Application;
+import balla.marek.kredite24.security.LoginController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Kredite24Application.class})
+@ContextConfiguration(classes = {LoginController.class})
 @WebMvcTest(controllers = LoginController.class, excludeAutoConfiguration = JpaRepositoriesAutoConfiguration.class)
 public class LoginControllerTest {
 
@@ -42,6 +42,7 @@ public class LoginControllerTest {
                             .param("email", "invalid@test.com")
                             .param("password", "secret")
                             .contentType(MediaType.MULTIPART_FORM_DATA))
-           .andExpect(status().isOk()).andExpect(MockMvcResultMatchers.content().string(containsString("Invalid Email")));
+           .andExpect(status().isOk()).andExpect(MockMvcResultMatchers.content()
+                                                                      .string(containsString("Invalid Email")));
     }
 }

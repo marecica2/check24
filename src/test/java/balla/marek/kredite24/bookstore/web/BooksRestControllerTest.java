@@ -1,6 +1,11 @@
-package balla.marek.kredite24.bookstore;
+package balla.marek.kredite24.bookstore.web;
 
-import balla.marek.kredite24.Kredite24Application;
+import balla.marek.kredite24.WebConfiguration;
+import balla.marek.kredite24.bookstore.book.Book;
+import balla.marek.kredite24.bookstore.book.BookRepository;
+import balla.marek.kredite24.bookstore.web.BooksRestController;
+import balla.marek.kredite24.security.LoggedUserFilter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -14,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +31,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Kredite24Application.class})
+@ContextConfiguration(classes = {BooksRestController.class, WebConfiguration.class})
 @WebMvcTest(controllers = BooksRestController.class)
 public class BooksRestControllerTest {
 
-    @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private WebApplicationContext wac;
 
     @MockBean
     BookRepository repository;
+
+    @BeforeEach
+    public void before() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(wac)
+                .addFilter(new LoggedUserFilter())
+                .build();
+    }
 
     @Test
     public void shouldReturnUnauthorized() throws Exception {
@@ -40,7 +57,6 @@ public class BooksRestControllerTest {
                             .get("/api/books"))
            .andExpect(status().isUnauthorized());
     }
-
 
     @Test
     public void shouldReturnBookList() throws Exception {
@@ -75,7 +91,7 @@ public class BooksRestControllerTest {
         b1.setId("b1");
         when(repository.findById(Mockito.any())).thenThrow(new ResourceNotFoundException());
         mvc.perform(MockMvcRequestBuilders
-                            .get("/api/books/b1/details")
+                            .get("/api/books/unknown/details")
                             .session(initHttpSession()))
            .andExpect(status().isNotFound());
     }
